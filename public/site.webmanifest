@@ -1,0 +1,17 @@
+{
+  "name": "VN Studio",
+  "short_name": "VN Studio",
+  "description": "A visual workspace for crafting interactive visual novels.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111718",
+  "theme_color": "#111718",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
