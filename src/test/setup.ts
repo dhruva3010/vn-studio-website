@@ -31,3 +31,4 @@ vi.stubGlobal("IntersectionObserver", class {
 });
 
 Object.defineProperty(window, "scrollTo", { writable: true, value: vi.fn() });
+Object.defineProperty(window.HTMLElement.prototype, "scrollIntoView", { writable: true, value: vi.fn() });

@@ -4,7 +4,8 @@ export const navigation = [
   { label: "Studio", href: "#studio" },
   { label: "Features", href: "#features" },
   { label: "Local-first", href: "#local" },
-  { label: "FAQ", href: "#faq" }
+  { label: "FAQ", href: "#faq" },
+  { label: "Docs", href: "./docs.html" }
 ];
 
 export const workflow = [

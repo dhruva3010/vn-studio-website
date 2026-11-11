@@ -29,7 +29,13 @@ export default defineConfig({
   build: {
     target: "es2022",
     cssMinify: true,
-    sourcemap: false
+    sourcemap: false,
+    rollupOptions: {
+      input: {
+        main: "index.html",
+        docs: "docs.html"
+      }
+    }
   },
   test: {
     environment: "jsdom",
