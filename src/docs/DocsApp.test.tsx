@@ -12,7 +12,7 @@ describe("VN Studio documentation", () => {
     const { container } = render(<DocsApp />);
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Everything you need");
-    expect(container.querySelectorAll(".doc-section")).toHaveLength(14);
+    expect(container.querySelectorAll(".doc-section")).toHaveLength(15);
     expect(screen.getByRole("heading", { name: "Publish for Windows and Web" })).toBeInTheDocument();
   });
 
