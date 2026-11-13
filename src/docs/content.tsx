@@ -48,46 +48,61 @@ export const documentationSections: DocumentationSection[] = [
       </div>
       <h3>What you need</h3>
       <ul>
-        <li>A Windows authoring machine.</li>
-        <li>Godot 4.7.2 Standard, either installed by VN Studio's setup script or available in your own Godot installation.</li>
+        <li>A Windows x64 PC. VN Studio is built and tested for Windows only.</li>
+        <li>The VN Studio release ZIP, which already contains its pinned portable Godot 4.7.2 engine. If you work from the source code instead, the setup script installs the same engine.</li>
         <li>Your artwork, audio, and story ideas. Original sample projects are included so you can explore before importing anything.</li>
       </ul>
+      <Callout title="Windows only">
+        <p>VN Studio runs on Windows, and Windows is the platform it is tested on. Mac and Android are out of scope: there is no Mac version of the studio, and Android games are not a publishing target.</p>
+      </Callout>
       <Callout title="Start with The Last Light" tone="tip">
         <p>The bundled sample is the quickest way to learn the workspace. It includes scenes, characters, dialogue, choices, audio, and a complete playable route. Later samples explore variables, animation, encounters, and RPG systems.</p>
       </Callout>
       <h3>What VN Studio is—and is not</h3>
-      <p>VN Studio is an actively developed personal game framework focused on 2D narrative games. It supports connected story-flow graphs, layered 2D characters, native cutout rigs, visual combat, and verified exports. Collaboration and an asset marketplace are outside its current scope. General-purpose drag-and-drop UI composition, tactical grids, third-party rig formats, and 3D stage placement remain limitations or future work.</p>
+      <p>VN Studio is an actively developed personal game framework focused on 2D narrative games. It supports connected story-flow graphs, layered 2D characters, native cutout rigs, visual combat with 2D, 2.5D, and 3D battle stages, and verified exports. Collaboration, an asset marketplace, and platforms other than Windows are outside its current scope. General-purpose drag-and-drop UI composition, third-party rig formats, and a general-purpose 3D editor remain limitations or future work.</p>
     </>
   ),
   section(
     "installation",
     "Getting started",
     "Install and launch",
-    "Set up the pinned Godot toolchain, open the studio, and choose between the normal application and Godot's development editor.",
-    "download setup godot run windows install launch setup-godot powershell",
+    "Install VN Studio on Windows from the release ZIP, update or roll back safely, or run it from a source checkout.",
+    "download setup godot run windows install update rollback zip installer launch setup-godot powershell localappdata backup",
     <>
-      <h3>1. Set up Godot on a fresh checkout</h3>
-      <p>Open PowerShell in the VN Studio source folder and run the setup script. It installs the portable Godot 4.7.2 Standard engine into the project's ignored <code>.tools/godot</code> directory.</p>
-      <CodeBlock code=".\scripts\setup-godot.ps1" />
-      <p>If you already have Godot 4.7.2, you can instead open <code>project.godot</code> in your installation. Open <code>main.tscn</code> and press <kbd>F6</kbd> to run the main scene.</p>
-      <h3>2. Launch VN Studio</h3>
-      <p>Double-click <strong>Launch VN Studio.cmd</strong> in Explorer, or start the application from PowerShell:</p>
-      <CodeBlock code=".\scripts\run.ps1" />
-      <p>To open the source project in Godot's development editor rather than the normal authoring application, use:</p>
-      <CodeBlock code=".\scripts\run.ps1 -Editor" />
-      <Callout title="No application runtime dependencies">
-        <p>The finished application does not require Python or Node.js to run. Those tools are only used by selected development and verification workflows. The portable toolchain, Godot import cache, and development application data stay in ignored <code>.tools</code> and <code>.godot</code> folders.</p>
+      <h3>1. Install from the release ZIP</h3>
+      <p>VN Studio ships as a Windows x64 ZIP that contains the application and its pinned portable Godot 4.7.2 engine. The ZIP installer is the only supported way to install it. It does not write registry entries, install services, or need administrator access.</p>
+      <DocSteps items={[
+        { title: "Download the release files", text: <>From the same trusted release, download the ZIP, its matching <code>.sha256</code> file, <strong>Install or update VN Studio.cmd</strong>, <code>install-windows-ui.ps1</code>, <code>windows-argv.ps1</code>, and the matching installer script. Keep them in one folder.</> },
+        { title: "Run the installer", text: <>Double-click <strong>Install or update VN Studio.cmd</strong> and pick the downloaded ZIP in the file picker. No typing in a command prompt is needed. VN Studio installs to <code>%LOCALAPPDATA%\Programs\VN Studio</code> by default.</> },
+        { title: "Launch the studio", text: <>Double-click <strong>Launch VN Studio.cmd</strong> in the install folder. The first launch imports the bundled project, so it takes a little longer.</> }
+      ]} />
+      <p>Before switching anything, the installer checks the ZIP against its SHA-256 file, checks every packaged file against the release manifest, and rejects unexpected files or paths. A checksum catches a damaged download; it is not a digital signature. Advanced users can run the included PowerShell installer with <code>-InstallRoot</code> to choose another absolute path.</p>
+      <h3>2. Update or roll back</h3>
+      <p>Close VN Studio, download the new release files, double-click <strong>Install or update VN Studio.cmd</strong> again, and pick the new ZIP. Each successful update keeps the previous version in a sibling <code>VN Studio.backup-*</code> folder. Installed export templates carry forward to the new version.</p>
+      <p>To go back to the previous version, close VN Studio, double-click <strong>Rollback VN Studio.cmd</strong> in the install folder, and confirm. The version you rolled back from is kept in a <code>VN Studio.failed-*</code> folder. If an update fails before the new version is accepted, the installer puts the previous folder back and tells you where it kept each copy. Backups are never removed automatically, so delete them yourself once you are happy with the new version.</p>
+      <Callout title="Updates never touch your work" tone="tip">
+        <p>Projects, published games, recovery files, settings, and player saves live outside the install folder, so updating or rolling back cannot move or replace them. New projects and builds go to <code>Documents\VN Studio</code> by default. See <a href="#assets">Assets, project files, and recovery</a>.</p>
       </Callout>
-      <h3>3. Choose a starting project</h3>
+      <h3>3. Run from source (contributors)</h3>
+      <p>If you work on VN Studio itself, open PowerShell in the source folder and run the setup script. It installs the portable Godot 4.7.2 Standard engine into the project's ignored <code>.tools/godot</code> directory.</p>
+      <CodeBlock code=".\scripts\setup-godot.ps1" />
+      <p>Then double-click <strong>Launch VN Studio.cmd</strong> or start the application from PowerShell. Add <code>-Editor</code> to open the source project in Godot's development editor instead.</p>
+      <CodeBlock code={String.raw`.\scripts\run.ps1
+.\scripts\run.ps1 -Editor`} label="PowerShell — run from source" />
+      <Callout title="No application runtime dependencies">
+        <p>The studio itself does not need Python or Node.js. Node.js 24 or later is only needed for the optional local MCP bridge, and some development checks use other tools. In a source checkout, the portable toolchain, Godot import cache, and development application data stay in ignored <code>.tools</code> and <code>.godot</code> folders.</p>
+      </Callout>
+      <h3>4. Choose a starting project</h3>
       <p>Use <strong>Project → New project</strong> for a blank story, or explore one of the bundled samples from the Project menu. <strong>The Last Light</strong> is the recommended first project. Other samples cover story state, discoveries, animation, combat, and persistent RPG progression.</p>
       <DocTable
         headers={["Action", "Command or location"]}
         rows={[
-          ["Set up portable Godot", <code>.\scripts\setup-godot.ps1</code>],
-          ["Run the studio", <code>.\scripts\run.ps1</code>],
-          ["Open the development editor", <code>.\scripts\run.ps1 -Editor</code>],
-          ["Prepare Windows export", <code>.\scripts\setup-export.ps1</code>],
-          ["Prepare Web export", <code>.\scripts\setup-export.ps1 -Target Web</code>]
+          ["Install or update", <><strong>Install or update VN Studio.cmd</strong>, then pick the release ZIP</>],
+          ["Launch the installed studio", <><strong>Launch VN Studio.cmd</strong> in <code>%LOCALAPPDATA%\Programs\VN Studio</code></>],
+          ["Roll back to the previous version", <><strong>Rollback VN Studio.cmd</strong> in the install folder</>],
+          ["Set up portable Godot (source)", <code>.\scripts\setup-godot.ps1</code>],
+          ["Run from source", <code>.\scripts\run.ps1</code>],
+          ["Open the development editor", <code>.\scripts\run.ps1 -Editor</code>]
         ]}
       />
     </>
@@ -107,8 +122,8 @@ export const documentationSections: DocumentationSection[] = [
         { title: "Write dialogue", text: <>Open the <strong>Dialogue</strong> tab and add lines. Select a line to set its speaker, expression, and text. Enter inserts a newline in the multiline editor.</> },
         { title: "Add meaningful choices", text: <>Open <strong>Choices</strong>, add player options, and select a destination scene for each. Without choices, the Scene tab's continuation determines what happens next.</> },
         { title: "Play the story", text: <>Choose <strong>Play story</strong> to start at the designated starting scene, or <strong>Preview scene</strong> to test only the current scene. Space or Enter reveals and then advances dialogue.</> },
-        { title: "Save the project", text: <>Press <kbd>Ctrl</kbd> + <kbd>S</kbd> and save a <code>.vn.json</code> file. Keep its adjacent assets folder with it. Save As copies imported artwork into the new destination.</> },
-        { title: "Publish when ready", text: <>Choose <strong>Publish</strong> and select Windows or Web. Share the entire generated output, not just the executable or HTML file.</> }
+        { title: "Save the project", text: <>Press <kbd>Ctrl</kbd> + <kbd>S</kbd> and save a <code>.vn.json</code> file. The dialog starts in <code>Documents\VN Studio\Projects</code>. Keep the project's adjacent assets folder with it. Save As copies imported artwork into the new destination.</> },
+        { title: "Publish when ready", text: <>Choose <strong>Publish</strong> and select Windows or Web. Builds go to <code>Documents\VN Studio\Builds</code> by default. Share the entire generated output, not just the executable or HTML file.</> }
       ]} />
       <Callout title="Fields commit before you play or save" tone="tip">
         <p>Inspector fields commit when you leave them, press Enter in a single-line field, save, or start preview. This makes the preview and saved document consistent. Text controls keep their native text undo; toolbar Undo and Redo operate on committed project edits.</p>
@@ -329,14 +344,81 @@ export const documentationSections: DocumentationSection[] = [
       <h3>One-on-one encounters</h3>
       <p>Configure a scene encounter with player and opponent characters, expressions, HP, attack, defense, healing, and victory and defeat destinations. Built-in Strike, Guard, and Heal actions are deterministic: there are no random rolls. Encounter-local skills add damage, healing, or protection with uses and cooldowns, and a reusable skill library stores up to 32 templates.</p>
       <h3>Party encounters</h3>
-      <p>Party battles add initiative, legal target selection, ordered enemy decisions, HP/MP costs, status effects, escape routes, and configurable presentation. Project rules define damage, Guard, initiative, built-in actions, AI fallback, and motion defaults. An encounter can override only the sections it needs while inheriting the rest.</p>
+      <p>Party battles add initiative, legal target selection, ordered enemy decisions, HP/MP costs, status effects, escape routes, and configurable presentation. Project rules define damage, Guard, initiative, the turn system, built-in actions, AI fallback, and motion defaults. An encounter can override only the sections it needs while inheriting the rest. How a party battle looks is set separately by its <a href="#battle-styles">battle style</a>.</p>
       <p>Custom status catalogs control stacking, duration, tick priority, and ordered effects. Custom stat and resource catalogs support up to 16 stats and eight resources, including vital resources, cost floors, persistence policies, and battle bindings. Battle stages and choreography add actor placement, expressions, sprite or rig clips, and camera cues.</p>
       <h3>Persistent RPG progression</h3>
       <p>The RPG catalog defines persistent units, skills, consumables, equipment, key items, cumulative XP thresholds, starting inventory, equipment slots, and level-up recovery policies. Equipment modifies derived stats without silently healing a unit. Bag and party controls enforce ownership, equipped-copy reservations, legal targets, and ineffective-use protection.</p>
       <h3>Connect results back to the story</h3>
       <p>Victory, defeat, and escape routes lead to ordinary scenes. Outcome actions update variables, items, and XP once before the destination's entry effects. Back from an outcome restores the encounter's entry inventory, vitals, equipment, XP, and variables, then restarts the battle. Repeated clicks or loading cannot duplicate rewards.</p>
       <Callout title="Choose the encounter model deliberately" tone="warning">
-        <p>Original one-on-one duels are not silently converted to party encounters. Party combat has a responsive built-in HUD rather than a freely composed battle-layout editor. Review the current scope before designing around a planned extension.</p>
+        <p>Original one-on-one duels are not silently converted to party encounters. Party battles choose from battle-style presets and settings rather than a freely composed battle-layout editor. Review the current scope before designing around a planned extension.</p>
+      </Callout>
+    </>
+  ),
+  section(
+    "battle-styles",
+    "Production",
+    "Battle styles and 3D fighters",
+    "Change how party battles look with four presets, formations, HUD layouts, turn displays, and 2D, 2.5D, or 3D stages, without changing the rules of the fight.",
+    "battle style preset classic monster duel timeline party side view formation hud turn order rail speed timeline 2.5d 3d stage camera standee cutout model fbx glb converter rig mcp",
+    <>
+      <p>A battle style changes where fighters stand, how status panels and the action menu are laid out, how the turn order is shown, and whether the stage is flat, 2.5D, or full 3D. It never changes damage, speed, targets, costs, or outcomes, so you can switch styles at any time without rebalancing a battle.</p>
+      <p>Open <strong>Project → Battle style…</strong> to choose a style beside a live preview that uses the same battle view players see. <strong>Project → Open battle styles demo</strong> loads a short story with one battle for each preset so you can compare them.</p>
+      <h3>Choose a preset</h3>
+      <p>A preset is a starting point. Change only what you want; settings that still match the preset are not stored, so your project keeps following later improvements to it. <strong>Reset to preset</strong> discards your changes.</p>
+      <DocTable
+        headers={["Preset", "What it looks like", "Good for"]}
+        rows={[
+          ["Classic", "Fighter cards in the bottom panel, a drop-down action menu, and a text turn line over the standard backdrop. No stage.", "Simple fights. Every project starts here."],
+          ["Monster duel", "A diagonal stage with a large fighter on each side, corner status boxes, and a command grid. Extra fighters wait on a bench row.", "One-on-one or small team duels."],
+          ["Timeline party", "Enemies ahead of the party on a 2.5D stage, a party portrait strip, enemy labels, a skill bar, and a turn rail.", "Larger parties and speed-based turns."],
+          ["Side view", "Two facing lines on stage, fighter cards, a skill bar, and a turn rail along the top.", "Classic side-on role-playing battles."]
+        ]}
+      />
+      <h3>Formations and HUD</h3>
+      <p>The formation places fighters automatically: <strong>Side by side</strong>, <strong>Diagonal</strong>, or <strong>Enemies ahead</strong>, with spacing, a size multiplier for each side, and depth. Encounters with their own hand-placed stage layout keep it in 2D and 2.5D.</p>
+      <ul>
+        <li><strong>Status layout</strong>: Cards, Corner boxes, or Portrait strip. Corner boxes and the portrait strip need a visible stage.</li>
+        <li><strong>Action menu</strong>: Dropdown, Grid, or Skill bar. A skill bar with more skills than fit scrolls, and keyboard or controller focus keeps the focused skill in view.</li>
+        <li><strong>Choosing targets</strong>: on the cards, on the stage, or both.</li>
+      </ul>
+      <p>In a monster duel with several fighters per side, only one fighter per side stands on stage. The rest wait on a compact bench with a health pip, can still be targeted, and step in when the active fighter falls or the turn order calls them. This is presentation only.</p>
+      <h3>Turn systems and the turn display</h3>
+      <p>The turn system is gameplay, so it lives in <strong>Project → Party combat rules…</strong>. The Battle style editor can suggest one.</p>
+      <DocTable
+        headers={["Turn system", "Who acts when"]}
+        rows={[
+          ["Fixed order", "Fighters are sorted once and that order repeats."],
+          ["Re-sort by speed each round", "Everyone is reordered by current speed at the start of each round."],
+          ["Speed timeline", "Faster fighters act more often. A shorter timeline length means more turns per round. It cannot be combined with party-first or enemy-first initiative."]
+        ]}
+      />
+      <p><strong>Show turn order as</strong> only changes the display: a line of text, hidden, or a rail of 3–10 upcoming turns at the top, left, or right. The rail always shows the real upcoming actors, and on a speed timeline it also shows each fighter's wait.</p>
+      <h3>2D, 2.5D, and 3D stages</h3>
+      <DocTable
+        headers={["Stage", "What you get"]}
+        rows={[
+          ["2D", "Fighters drawn over the flat backdrop. The default for most presets."],
+          ["2.5D", <>Fighters stand on a ground plane with perspective. Set <strong>Floor line</strong> to match your backdrop's floor, and turn on <strong>Camera follows the action</strong> to ease toward whoever acts. Timeline party starts here.</>],
+          ["3D", <>A real arena with ground, sky, lighting, and your backdrop as a scenery panel. Adds camera motion, environment, ground colour (or <strong>From backdrop</strong>), and an arena size of 4–20 m.</>]
+        ]}
+      />
+      <p>Every 2.5D and 3D stage has a camera turn, height angle, distance, and field of view, plus neutral, warm, or cool lighting. In 3D, the camera can be <strong>Static</strong>, <strong>Sway</strong>, or <strong>Cinematic</strong>, which moves in for each action and briefly fades fighters that block the shot. Reduced motion stops the sway and turns camera moves into cuts.</p>
+      <p>Flat character art stands in the 3D arena as a billboard. <strong>Fighter art</strong> chooses a <strong>Cutout</strong> for full-body art, a <strong>Standee</strong> on a small base plate for busts, or <strong>Auto</strong>, which picks for you from the bottom edge of the art.</p>
+      <h3>Use 3D models for fighters</h3>
+      <p>In 2.5D and 3D battles a fighter can use a real 3D model. Import a GLB into <strong>Project → 3D model library…</strong>, then select the character and choose <strong>3D battle model…</strong> to set the model, size, facing, and the clips for idle, attack, skill, hit, guard, and defeat. Picking a model fills these roles from its clip names, and <strong>Auto-map clips</strong> repeats the guess. A missing clip falls back to a simple lunge, flinch, or fall, and fighters without a model keep their flat art, so one battle can mix both.</p>
+      <p>Models from other tools usually need preparing first. The headless converter turns an FBX, glTF, or GLB character into a GLB inside the library's limits. Rigged models keep their skeleton and up to 16 animation clips; anything else becomes a static mesh. Open PowerShell in the VN Studio folder (the install folder, or your source checkout) and run it with the bundled Godot engine. You do not need Godot on your PATH:</p>
+      <CodeBlock code={String.raw`.\.tools\godot\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script tools/convert_battle_model.gd -- --in Hero.fbx --out Hero.glb --report Hero.json`} label="PowerShell — convert a battle fighter" />
+      <ul>
+        <li>Only <code>--in</code> and <code>--out</code> are required. Defaults are a 60,000-triangle budget, 1024-pixel textures, and a height of 1.8 m.</li>
+        <li>Battles expect models to face the camera. Use <code>--yaw 180</code> for a model exported facing away, and <code>--fit max</code> for wide models such as winged creatures.</li>
+        <li>When an FBX's texture paths are broken, the converter looks for matching loose images beside the model. Name one explicitly with <code>--texture Material=image.png</code>.</li>
+        <li>Use <code>--static</code> to force a static mesh and <code>--pose Idle@0.5</code> to pick the frame it is baked from. Rigs too large for the limits fall back to a static mesh and say why in the report.</li>
+      </ul>
+      <h3>Per-encounter overrides</h3>
+      <p>A project has one game-wide style. In a party encounter's editor, choose <strong>Battle style…</strong>, change the preset, formation, or stage, and choose <strong>Use for this encounter</strong>. Anything you leave alone keeps following the game style, and <strong>Use game style</strong> removes the override. The HUD, action menu, and turn display always follow the game style.</p>
+      <Callout title="Set styles from an AI client" tone="tip">
+        <p>The local MCP tools <code>vn_get_battle_style</code> and <code>vn_set_battle_style</code> read and write the project style and turn system, and <code>put_party_encounter</code> accepts an encounter-level <code>battle_style</code>. The same validation as the editor applies, so an invalid setting is rejected and nothing is saved.</p>
       </Callout>
     </>
   ),
@@ -345,10 +427,13 @@ export const documentationSections: DocumentationSection[] = [
     "Publishing & reference",
     "Assets, project files, and recovery",
     "Keep projects portable, inspect referenced files, restore previous revisions, and understand where authoring and player data live.",
-    "assets manifest vn.json backup recovery project files sha256 local privacy portable",
+    "assets manifest vn.json backup recovery project files sha256 local privacy portable documents projects builds folder controlled folder access",
     <>
       <h3>Keep the project together</h3>
       <p>An authoring project is a <code>.vn.json</code> document plus its adjacent asset files. Save As copies imported artwork into the destination's asset folder so the project can move to another machine. Do not independently rename or delete that asset folder while the project still references it.</p>
+      <h3>Where projects and builds go</h3>
+      <p>Save and Open dialogs start in <code>Documents\VN Studio\Projects</code>, and Publish builds into <code>Documents\VN Studio\Builds</code>. These folders sit outside the install folder, so updating or rolling back VN Studio never moves your work. A project you already saved somewhere else keeps opening from where it is.</p>
+      <p>If Windows will not let VN Studio create <code>Documents\VN Studio</code>, for example when Controlled Folder Access is on, VN Studio uses a <code>Creator files</code> folder in your per-user app data instead. That folder is also never moved by updates. If neither location can be written, Publish tells you so instead of failing silently.</p>
       <DocTable
         headers={["File or folder", "Purpose"]}
         rows={[
@@ -378,14 +463,15 @@ export const documentationSections: DocumentationSection[] = [
     "publish export windows web browser godot template build game exe pck webassembly webgl",
     <>
       <h3>Prepare the verified export templates</h3>
-      <p>Install each target template once on the authoring machine after setting up Godot. The Windows archive is approximately 1.3 GB; setup verifies its official SHA-512 checksum and extracts only the required release template. Subsequent builds are offline.</p>
-      <CodeBlock code=".\scripts\setup-export.ps1" label="PowerShell — Windows template" />
-      <CodeBlock code=".\scripts\setup-export.ps1 -Target Web" label="PowerShell — Web template" />
+      <p>Publishing uses Godot's official 4.7.2 export templates. They are not bundled because the archive is approximately 1.3 GB. In <strong>Publish</strong>, choose your target, select <strong>Get official archive</strong> to open the Godot release page, download the templates archive, then choose <strong>Install template…</strong> and pick it. Studio checks the archive's pinned checksum before installing. Repeat for the other target with the same archive. Templates live outside the install folder, survive updates and rollback, and later builds work offline.</p>
+      <p>Contributors working from a source checkout can install templates from PowerShell instead:</p>
+      <CodeBlock code={String.raw`.\scripts\setup-export.ps1
+.\scripts\setup-export.ps1 -Target Web`} label="PowerShell — Windows and Web templates" />
       <h3>Build a standalone Windows game</h3>
       <DocSteps items={[
         { title: "Save and validate", text: <>Resolve missing destinations, broken assets, incomplete encounters, and other diagnostics reported by Play or Publish.</> },
         { title: "Choose the package scope", text: <>Use a full build for every scene and character, or enable <strong>Package only reachable scenes and their assets</strong> for a focused build. Keep the same mode when republishing for existing saves.</> },
-        { title: "Build Windows game", text: <>Choose <strong>Publish → Build Windows game</strong> and a destination. Studio exports from an isolated snapshot, then runs the packaged game in verification mode.</> },
+        { title: "Build Windows game", text: <>Choose <strong>Publish → Build Windows game</strong>. The destination defaults to <code>Documents\VN Studio\Builds</code>. Studio exports from an isolated snapshot, then runs the packaged game in verification mode.</> },
         { title: "Share the whole folder", text: <>Distribute <code>Game.exe</code>, <code>Game.pck</code>, <code>README.txt</code>, <code>THIRD-PARTY-NOTICES.txt</code>, and <code>build-info.json</code> together. Players do not need Godot or VN Studio.</> }
       ]} />
       <Callout title="Windows executables are unsigned" tone="warning">
@@ -411,7 +497,7 @@ export const documentationSections: DocumentationSection[] = [
     "Publishing & reference",
     "Shortcuts and troubleshooting",
     "Use the essential keyboard commands, validate a source checkout, and resolve common setup, asset, save, preview, and publishing problems.",
-    "keyboard shortcuts troubleshooting errors validation tests missing assets saves web build roadmap",
+    "keyboard shortcuts troubleshooting errors validation tests missing assets saves web build roadmap rollback controlled folder access documents mac android platforms",
     <>
       <h3>Authoring shortcuts</h3>
       <DocTable
@@ -439,7 +525,11 @@ export const documentationSections: DocumentationSection[] = [
           ["A Web export does not start", <>Serve the complete folder over HTTP(S), confirm WebAssembly and WebGL 2 support, and keep generated filenames together.</>],
           ["Browser audio is silent", <>Click inside the game to unlock audio, then check Playback master and channel volumes.</>],
           ["A build was cancelled or interrupted", <>Open Publish → Inspect build and read the log. Build again from a fresh snapshot; partial output is not finalized.</>],
-          ["Windows reports an unknown publisher", <>The current Windows executable is unsigned. Review the build locally and distribute the complete verified folder.</>]
+          ["Windows reports an unknown publisher", <>The current Windows executable is unsigned. Review the build locally and distribute the complete verified folder.</>],
+          ["Projects or builds are not in Documents", <>Windows may be blocking writes to Documents, for example through Controlled Folder Access. VN Studio then uses <code>Creator files</code> in your per-user app data. Allow VN Studio through Controlled Folder Access if you want the Documents folders.</>],
+          ["An update misbehaves", <>Close VN Studio and run <strong>Rollback VN Studio.cmd</strong> in the install folder. Your projects, builds, and saves are not affected.</>],
+          ["A 3D fighter looks wrong in battle", <>Re-run the battle model converter with a report. Use <code>--yaw 180</code> if it faces away, <code>--fit max</code> for wide models, and <code>--texture</code> if its textures are missing.</>],
+          ["You want VN Studio on a Mac or Android", <>Those platforms are out of scope. VN Studio runs on Windows, and games publish for Windows or the Web.</>]
         ]}
       />
       <h3>Validate a source checkout</h3>

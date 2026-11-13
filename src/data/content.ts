@@ -65,7 +65,7 @@ export const capabilities = [
   {
     icon: "swords",
     title: "Encounters & progression",
-    description: "Turn-based encounters, visual combat rules, inventory, equipment, and RPG progression."
+    description: "Turn-based encounters, battle-style presets on 2D, 2.5D, or 3D stages, inventory, equipment, and RPG progression."
   },
   {
     icon: "save",
@@ -92,6 +92,10 @@ export const faqs = [
   {
     question: "What can I publish?",
     answer: "You can build a standalone Windows game or a browser-ready Web export. Windows players do not need Godot or VN Studio installed. Web exports can be uploaded to a static HTTPS host with WebAssembly and WebGL 2 support."
+  },
+  {
+    question: "Which platforms does VN Studio run on?",
+    answer: "Windows. VN Studio installs from a Windows x64 ZIP with a built-in update and rollback, and it is tested on Windows only. Mac and Android are out of scope, both for the studio and as publishing targets."
   },
   {
     question: "Does VN Studio require an account or cloud service?",
